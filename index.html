@@ -15,45 +15,122 @@
   }
 
   @keyframes fontbulger {
-  0% {
-    color: red;
+    0% {
+      color: red;
+    }
+    16% {
+      color: orange;
+    }
+    32% {
+      color: yellow;
+    }
+    48% {
+      color: green;
+    }
+    64% {
+      color: blue;
+    }
+    82% {
+      color: rebeccapurple;
+    }
+    100% {
+      color: red;
+    }
   }
-  16% {
-    color: orange;
-  }
-  32% {
-    color: yellow;
-  }
-  48% {
-    color: green;
-  }
-  64% {
-    color: blue;
-  }
-  82% {
-    color: rebeccapurple;
-  }
-  100% {
-    color: red;
-  }
-}
 
   .flashy-rainbow{
     animation: fontbulger 2s infinite;
   }
+
+  #game-field {
+    background-color: tan;
+    margin: 12px auto;
+    padding: 9px;
+    color: black;
+    border: 2px solid grey;
+    border-radius: 10px;
+    width: 400px;
+    height: 400px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: stetch;
+    flex-wrap: wrap;
+  }
+
+  .card {
+    border-radius: 10px;
+    border: 2px solid black;
+    margin: 9px;
+    padding: 0;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .card-2{
+    flex: 0 0 calc(50% - 18px);
+  }
+  .card-4{
+    flex: 0 0 calc(25% - 18px);
+  }
+
+  .card-6{
+    flex: 0 0 calc(100% / 6 - 18px);
+  }
 </style>
 <script>
+  // https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array 
+  /**
+  * Shuffles array in place.
+  * @param {Array} a items An array containing the items.
+  */
+  function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      x = a[i];
+      a[i] = a[j];
+      a[j] = x;
+    }
+    return a;
+  }
+
   function startGame() {
     // get the input
     const inputEl = document.getElementById('inputId');
     // save the value of the input so we can reference it
     const inputValue = parseInt(inputEl.value);
 
-    if (inputValue !== 2 & inputValue !== 4 && inputValue !== 6) {
+    if (inputValue !== 2 && inputValue !== 4 && inputValue !== 6) {
       return alert('Nice hair. ;P Try 2, 4, or 6?');
     }
     // build the game, rows cols with info -- arr
-    // listten for card clicks
+    const numOfMatches = inputValue * inputValue / 2;
+    const matches = []; //length of numOfMatches
+    
+    for(let i = 1; i <= numOfMatches; i++){
+      matches.push(i);
+      matches.push(i);
+    }
+    // shuffle the array
+    shuffle(matches)
+    
+    // render the cards
+    const gameField = document.getElementById('game-field');
+    gameField.innerHTML = '';
+    for(let i = 0; i < matches.length; i++) {
+      const card = document.createElement("DIV")
+      card.classList.add('card');
+      card.classList.add('card-'+inputValue);
+      card.innerHTML = matches[i];
+      gameField.appendChild(card);
+    }
+    
+    // listen for card clicks
     // after two we need to compare to see if they match
     // handle match
     // handle not matching
@@ -63,7 +140,7 @@
 <div>How many rows? (2, 4, 6)</div>
 <div>
   <input id="inputId" class="flashy-rainbow" />
-</div>
-<div>
   <button onclick="startGame()">start game</button>
 </div>
+
+<div id="game-field">No game started yet</div>
